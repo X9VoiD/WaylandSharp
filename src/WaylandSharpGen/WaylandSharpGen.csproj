@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>WaylandSharp</PackageId>
+    <Description>WaylandSharp is a .NET library for interacting with the Wayland protocol.</Description>
+    <Authors>X9VoiD</Authors>
+    <PackageTags>wayland;source-generator;</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/X9VoiD/WaylandSharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadMeFile>README.md</PackageReadMeFile>
+  </PropertyGroup>
+
+  <!-- SourceLink -->
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="../../README.md" Pack="true" PackagePath="" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WaylandProtocol" />
+  </ItemGroup>
+
+</Project>

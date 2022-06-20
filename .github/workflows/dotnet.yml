@@ -1,0 +1,35 @@
+name: .NET
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+
+  Build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0'
+        include-prerelease: True
+    - name: Build WaylandSharpGen
+      run: dotnet build src/WaylandSharpGen
+
+  Tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0'
+        include-prerelease: True
+    - name: Run tests
+      run: dotnet test src/WaylandSharp.Tests

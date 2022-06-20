@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{61C9FCD3-FC5C-4C6C-81D8-C4F6CB14D43C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaylandSharp.Tests", "src\WaylandSharp.Tests\WaylandSharp.Tests.csproj", "{63F45EF6-1F31-4FCE-B964-FB002B9ADF6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaylandSharpGen", "src\WaylandSharpGen\WaylandSharpGen.csproj", "{4F251807-6D14-4725-B8C4-7C507F2F5FAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaylandSharp.IntegrationTests", "src\WaylandSharp.IntegrationTests\WaylandSharp.IntegrationTests.csproj", "{CFD15FD9-D9BE-4FC9-A201-F29FFED3B5F0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63F45EF6-1F31-4FCE-B964-FB002B9ADF6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F45EF6-1F31-4FCE-B964-FB002B9ADF6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63F45EF6-1F31-4FCE-B964-FB002B9ADF6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63F45EF6-1F31-4FCE-B964-FB002B9ADF6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F251807-6D14-4725-B8C4-7C507F2F5FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F251807-6D14-4725-B8C4-7C507F2F5FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F251807-6D14-4725-B8C4-7C507F2F5FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F251807-6D14-4725-B8C4-7C507F2F5FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFD15FD9-D9BE-4FC9-A201-F29FFED3B5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFD15FD9-D9BE-4FC9-A201-F29FFED3B5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFD15FD9-D9BE-4FC9-A201-F29FFED3B5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFD15FD9-D9BE-4FC9-A201-F29FFED3B5F0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{63F45EF6-1F31-4FCE-B964-FB002B9ADF6F} = {61C9FCD3-FC5C-4C6C-81D8-C4F6CB14D43C}
+		{4F251807-6D14-4725-B8C4-7C507F2F5FAA} = {61C9FCD3-FC5C-4C6C-81D8-C4F6CB14D43C}
+		{CFD15FD9-D9BE-4FC9-A201-F29FFED3B5F0} = {61C9FCD3-FC5C-4C6C-81D8-C4F6CB14D43C}
+	EndGlobalSection
+EndGlobal

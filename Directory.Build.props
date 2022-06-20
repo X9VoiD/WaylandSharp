@@ -1,0 +1,20 @@
+<Project>
+
+  <PropertyGroup>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <LangVersion>preview</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <AnalysisMode>All</AnalysisMode>
+    <ImplicitUsings>false</ImplicitUsings>
+    <WarningLevel>9999</WarningLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="CLSCompliantAttribute">
+      <_Parameter1>false</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>
