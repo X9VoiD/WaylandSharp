@@ -90,4 +90,24 @@ public class ConnectionTest
 
         outputManager!.Dispose();
     }
+
+    [Fact]
+    public void GlobalNameIsProxyId()
+    {
+        using var display = WlDisplay.Connect();
+        using var registry = display.GetRegistry();
+        var monitor = registry.Monitor();
+
+        registry.Global += (_, e) =>
+        {
+            if (e.Interface == WlInterface.WlOutput.Name)
+            {
+                using var output = registry.Bind<WlOutput>(e.Name, e.Interface);
+                output.GetId().Should().Be(e.Name);
+            }
+        };
+
+        display.Roundtrip().Should().NotBe(-1);
+        monitor.Should().Raise(nameof(WlRegistry.Global));
+    }
 }

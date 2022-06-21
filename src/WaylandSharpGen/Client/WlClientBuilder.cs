@@ -1089,6 +1089,12 @@ public abstract unsafe class {{WlClientObjectTypeName}} : IEquatable<{{WlClientO
         return WlProxyGetVersion(_proxyObject);
     }
 
+    public uint GetId()
+    {
+        CheckIfDisposed();
+        return WlProxyGetId(_proxyObject);
+    }
+
     protected void HookDispatcher()
     {
         lock (_syncLock)
