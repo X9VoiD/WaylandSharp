@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <PackageId>WaylandSharp</PackageId>
-    <Description>WaylandSharp is a .NET library for interacting with the Wayland protocol.</Description>
+    <Description>An incremental source generator to automatically create bindings to Wayland using given protocol xml files.</Description>
     <Authors>X9VoiD</Authors>
     <PackageTags>wayland;source-generator;</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,6 +18,7 @@
 
   <!-- SourceLink -->
   <PropertyGroup>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
