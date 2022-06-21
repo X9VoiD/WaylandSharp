@@ -16,7 +16,6 @@ Grab `wayland.xml` from [freedesktop.org](https://gitlab.freedesktop.org/wayland
 Add this to your `csproj`
 ```xml
 <PropertyGroup>
-  <!-- Generated code will contain unsafe code blocks -->
   <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 </PropertyGroup>
 
