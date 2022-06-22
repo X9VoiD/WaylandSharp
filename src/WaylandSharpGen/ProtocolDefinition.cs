@@ -138,17 +138,19 @@ internal sealed record ProtocolMessageDefinition
     public ProtocolMessageType Type { get; }
     public string Name { get; }
     public int OpCode { get; }
+    public int Since { get; }
     public string? DocumentationSummary { get; }
     public string? Documentation { get; }
     public string? ExtraTypeAnnotation { get; }
 
     public ImmutableArray<ProtocolMessageArgumentDefinition> Arguments { get; }
 
-    public ProtocolMessageDefinition(ProtocolMessageType type, string name, int opCode, string? documentationSummary, string? documentation, string? extraTypeAnnotation, ImmutableArray<ProtocolMessageArgumentDefinition> arguments)
+    public ProtocolMessageDefinition(ProtocolMessageType type, string name, int opCode, int since, string? documentationSummary, string? documentation, string? extraTypeAnnotation, ImmutableArray<ProtocolMessageArgumentDefinition> arguments)
     {
         Type = type;
         Name = name;
         OpCode = opCode;
+        Since = since;
         DocumentationSummary = documentationSummary;
         Documentation = documentation;
         ExtraTypeAnnotation = extraTypeAnnotation;
@@ -165,6 +167,7 @@ internal sealed record ProtocolMessageDefinition
         };
         var name = element.GetAttribute("name");
         var opCode = index;
+        var since = int.TryParse(element.GetAttribute("since"), out var since_) ? since_ : 0;
         var documentationElement = element.SelectSingleNode("description") as XmlElement;
         var documentationSummary = documentationElement?.GetAttribute("summary").DefiniteNull();
         var documentation = documentationElement?.InnerText.Trim().DefiniteNull();
@@ -173,7 +176,7 @@ internal sealed record ProtocolMessageDefinition
             .OfType<XmlElement>()
             .Select(ProtocolMessageArgumentDefinition.FromXml)
             .ToImmutableArray();
-        return new ProtocolMessageDefinition(type, name, opCode, documentationSummary, documentation, extraTypeAnnotation, arguments);
+        return new ProtocolMessageDefinition(type, name, opCode, since, documentationSummary, documentation, extraTypeAnnotation, arguments);
     }
 
     public bool Equals(ProtocolMessageDefinition other)
@@ -219,7 +222,6 @@ internal sealed record ProtocolMessageArgumentDefinition
     public string? Interface { get; }
     public string? Documentation { get; }
     public string? Enum { get; }
-
 
     public ProtocolMessageArgumentDefinition(string name, ProtocolMessageArgumentType type, bool nullable, string? @interface, string? documentation, string? @enum)
     {

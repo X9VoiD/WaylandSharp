@@ -41,7 +41,7 @@ public class WlClientPinvokeBuilderTest
         var expectedText = string.Format(
             """
             [DllImport(LibWaylandClient, EntryPoint = "wl_proxy_marshal_flags", ExactSpelling = true)]
-            public static extern _WlProxy* WlProxyMarshalFlags(_WlProxy* proxy, uint opcode, _WlInterface* @interface, uint version, uint flags, {0} param0);
+            public static extern _WlProxy* WlProxyMarshalFlags(_WlProxy* proxy, uint opcode, _WlInterface* @interface, uint version, uint flags, _WlProxy* param0, {0} param1);
             """, marshalledType);
 
         fullText.Should().Be(expectedText);

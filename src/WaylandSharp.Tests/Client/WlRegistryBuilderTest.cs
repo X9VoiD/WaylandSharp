@@ -29,7 +29,7 @@ public class WlRegistryBuilderTest
                 {
                     var interfacePtr = WlInterface.FromInterfaceName(interfaceName).ToBlittable();
                     version = version == 0 ? (uint)interfacePtr->Version : version;
-                    var proxy = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, version, 0, name, version);
+                    var proxy = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, version, 0, name, interfacePtr->Name, version);
                     return interfaceName switch
                     {
                         _ => throw new WlClientException("Unknown interface")};
@@ -71,7 +71,7 @@ public class WlRegistryBuilderTest
                 {
                     var interfacePtr = WlInterface.FromInterfaceName(interfaceName).ToBlittable();
                     version = version == 0 ? (uint)interfacePtr->Version : version;
-                    var proxy = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, version, 0, name, version);
+                    var proxy = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, version, 0, name, interfacePtr->Name, version);
                     return interfaceName switch
                     {
                         "foo" => new Foo(proxy),

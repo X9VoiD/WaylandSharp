@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using static WaylandSharpGen.WlCommonIdentifiers;
 namespace WaylandSharpGen;
 
@@ -231,12 +232,44 @@ internal class WlInterfaceBuilder
                                              ProtocolInterfaceDefinition interfaceDefinition,
                                              ExpressionSyntax interfaceBuilderSyntax,
                                              string messageType,
-                                             ProtocolMessageDefinition @event)
+                                             ProtocolMessageDefinition message)
     {
-        EnsureDependencies(protocolDefinition, interfaces, interfaceDefinition, @event);
+        EnsureDependencies(protocolDefinition, interfaces, interfaceDefinition, message);
+
+        if (interfaceDefinition.Name == "wl_registry" && message.Name == "bind")
+        {
+            message = new ProtocolMessageDefinition(
+                message.Type,
+                message.Name,
+                message.OpCode,
+                message.Since,
+                message.DocumentationSummary,
+                message.Documentation,
+                message.ExtraTypeAnnotation,
+                new ProtocolMessageArgumentDefinition[] {
+                    message.Arguments[0],
+                    new ProtocolMessageArgumentDefinition(
+                        name: "interface",
+                        type: ProtocolMessageArgumentType.String,
+                        nullable: false,
+                        @interface: null,
+                        documentation: null,
+                        @enum: null
+                    ),
+                    new ProtocolMessageArgumentDefinition(
+                        name: "version",
+                        type: ProtocolMessageArgumentType.Uint,
+                        nullable: false,
+                        @interface: null,
+                        documentation: null,
+                        @enum: null
+                    ),
+                    message.Arguments[1]
+                }.ToImmutableArray());
+        }
 
         var types = new List<ExpressionSyntax>();
-        foreach (var arg in @event.Arguments)
+        foreach (var arg in message.Arguments)
         {
             if (arg.Interface is null)
             {
@@ -260,11 +293,11 @@ internal class WlInterfaceBuilder
                     Argument(
                         LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            Literal(@event.Name))),
+                            Literal(message.Name))),
                     Argument(
                         LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            Literal(@event.ToSignature().Raw))),
+                            Literal(message.ToSignature().Raw))),
                     Argument(
                         ArrayCreationExpression(
                             ArrayType(

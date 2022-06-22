@@ -549,15 +549,16 @@ internal class WlClientBuilder
             for (var ii = 0; ii < requestDefinition.Arguments.Length; ++ii)
             {
                 var requestArg = requestDefinition.Arguments[ii];
-                if (requestArg.Type == ProtocolMessageArgumentType.NewId)
-                    continue;
 
-                var parameter =
-                    Parameter(Identifier(requestArg.Name.Escape()))
-                    .WithType(GetRequestTypeMapping(interfaceName, requestArg));
+                if (requestArg.Type != ProtocolMessageArgumentType.NewId)
+                {
+                    var parameter =
+                        Parameter(Identifier(requestArg.Name.Escape()))
+                        .WithType(GetRequestTypeMapping(interfaceName, requestArg));
 
-                // Add request definition as parameter to this request method
-                requestParameters.Add(parameter);
+                    // Add request definition as parameter to this request method
+                    requestParameters.Add(parameter);
+                }
 
                 // Convert argument to blittable version for wl_proxy_marshal_flags()
                 // var arg{ii} = {conversionExpression};
@@ -972,6 +973,15 @@ internal class WlClientBuilder
                     IdentifierName("_proxyObject"));
         }
 
+        static ExpressionSyntax convertNewId()
+        {
+            return
+                CastExpression(
+                    _WlProxyPointerSyntax,
+                    LiteralExpression(
+                        SyntaxKind.NullLiteralExpression));
+        }
+
         static ExpressionSyntax convertEnum(IdentifierNameSyntax identifier, ProtocolMessageArgumentType type)
         {
             return
@@ -997,6 +1007,7 @@ internal class WlClientBuilder
             ProtocolMessageArgumentType.String => convertCharPointer(identifier),
             ProtocolMessageArgumentType.Array => convertWlArray(identifier),
             ProtocolMessageArgumentType.Object => convertWlObject(identifier),
+            ProtocolMessageArgumentType.NewId => convertNewId(),
             ProtocolMessageArgumentType.FD => identifier,
             _ => throw new NotSupportedException("Cannot marshal unknown argument type")
         };

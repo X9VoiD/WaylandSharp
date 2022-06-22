@@ -487,7 +487,8 @@ public class WlClientBuilderTest
                 {
                     CheckIfDisposed();
                     var interfacePtr = WlInterface.SomeInterface.ToBlittable();
-                    var newId = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, WlProxyGetVersion(_proxyObject), 0);
+                    var arg0 = (_WlProxy*)null;
+                    var newId = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, WlProxyGetVersion(_proxyObject), 0, arg0);
                     return new SomeInterface(newId);
                 }
             }
@@ -548,9 +549,10 @@ public class WlClientBuilderTest
                     var arg4 = (char*)Marshal.StringToHGlobalAnsi(bar_string)!;
                     var arg5 = bar_object._proxyObject;
                     var arg6 = bar_interfaceless_object._proxyObject;
+                    var arg7 = (_WlProxy*)null;
                     var arg8 = (_WlArray*)bar_array.RawPointer;
                     var arg9 = bar_fd;
-                    var newId = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, WlProxyGetVersion(_proxyObject), 0, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg8, arg9);
+                    var newId = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, WlProxyGetVersion(_proxyObject), 0, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
                     return new OhNyo(newId);
                 }
             }
@@ -680,19 +682,6 @@ public class WlClientBuilderTest
             """;
 
         protocolImplementationText.Should().Be(expectedText);
-    }
-
-    [Fact]
-    public void CanBuildWaylandCoreProtocol()
-    {
-        var doc = new XmlDocument();
-        doc.LoadXml(WaylandProtocol.Text);
-
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
-        var wlClientBuilder = new WlClientBuilder();
-        wlClientBuilder.ProcessProtocolDefinition(protocolDefinition);
-
-        wlClientBuilder.BuildAsCompilationUnit();
     }
 
     [Fact]

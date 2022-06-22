@@ -23,7 +23,7 @@ public readonly struct Signature : IEquatable<Signature>
 
     public string AsHash()
     {
-        return SignatureOnly.Replace("n", "").Replace("?", "").Replace("h", "i");
+        return SignatureOnly.Replace("?", "").Replace("h", "i").Replace("f", "i").Replace("n", "o");
     }
 
     public static bool operator ==(Signature left, Signature right) => left.Raw == right.Raw;

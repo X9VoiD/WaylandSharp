@@ -58,11 +58,14 @@ public class ConnectionTest
         {
             if (e.Interface == WlInterface.WlOutput.Name)
             {
-                var output = registry.Bind<WlOutput>(e.Name, e.Interface);
+                var output = registry.Bind<WlOutput>(e.Name, e.Interface, e.Version);
                 outputs.Add(output);
             }
         };
 
+        // Roundtrip twice, first run gets the globals, second run informs the
+        // server of the binding.
+        display.Roundtrip().Should().NotBe(-1);
         display.Roundtrip().Should().NotBe(-1);
         outputs.Count.Should().BeGreaterThan(0);
 
@@ -70,25 +73,6 @@ public class ConnectionTest
         {
             output.Dispose();
         }
-    }
-
-    [Fact]
-    public void CanBindToNonCoreGlobals()
-    {
-        using var display = WlDisplay.Connect();
-        using var registry = display.GetRegistry();
-        ZxdgOutputManagerV1? outputManager = null;
-
-        registry.Global += (_, e) =>
-        {
-            if (e.Interface == WlInterface.ZxdgOutputManagerV1.Name)
-                outputManager = registry.Bind<ZxdgOutputManagerV1>(e.Name, e.Interface);
-        };
-
-        display.Roundtrip().Should().NotBe(-1);
-        outputManager.Should().NotBeNull();
-
-        outputManager!.Dispose();
     }
 
     [Fact]
@@ -102,11 +86,12 @@ public class ConnectionTest
         {
             if (e.Interface == WlInterface.WlOutput.Name)
             {
-                using var output = registry.Bind<WlOutput>(e.Name, e.Interface);
+                using var output = registry.Bind<WlOutput>(e.Name, e.Interface, e.Version);
                 output.GetId().Should().Be(e.Name);
             }
         };
 
+        display.Roundtrip().Should().NotBe(-1);
         display.Roundtrip().Should().NotBe(-1);
         monitor.Should().Raise(nameof(WlRegistry.Global));
     }

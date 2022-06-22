@@ -28,7 +28,6 @@
   <ItemGroup>
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WaylandProtocol" />
     <AdditionalFiles Include="wayland.xml" WaylandProtocol="client" />
-    <AdditionalFiles Include="xdg-output-unstable-v1.xml" WaylandProtocol="client" />
     <ProjectReference Include="..\WaylandSharpGen\WaylandSharpGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 

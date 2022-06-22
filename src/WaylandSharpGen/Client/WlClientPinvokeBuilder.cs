@@ -20,6 +20,8 @@ internal class WlClientPInvokeBuilder
     {
         var signature = definition.ToSignature();
         var hash = signature.AsHash();
+        if (hash == "usu")
+            return;
         if (_marshal.ContainsKey(hash))
             return;
 
@@ -97,9 +99,7 @@ internal class WlClientPInvokeBuilder
          *                                                    __arglist);
          */
 
-        var arguments = definition.Arguments
-            .Where(a => a.Type != ProtocolMessageArgumentType.NewId)
-            .ToArray();
+        var arguments = definition.Arguments;
 
         var parameters = new List<ParameterSyntax>
         {
@@ -282,6 +282,16 @@ internal static unsafe class Client
                                                   {{_WlDispatcherFuncTTypeName}} dispatcher,
                                                   void* implementation,
                                                   void* data);
+
+    [DllImport(LibWaylandClient, EntryPoint = "wl_proxy_marshal_flags", ExactSpelling = true)]
+    public static extern {{_WlProxyTypeName}}* WlProxyMarshalFlags({{_WlProxyTypeName}}* proxy,
+                                                       uint opcode,
+                                                       {{_WlInterfaceTypeName}}* @interface,
+                                                       uint version,
+                                                       uint flags,
+                                                       uint param0,
+                                                       char* param1,
+                                                       uint param2);
 
     [DllImport(LibWaylandClient, EntryPoint = "wl_proxy_marshal_array_constructor", ExactSpelling = true)]
     public static extern {{_WlProxyTypeName}}* WlProxyMarshalArrayConstructor({{_WlProxyTypeName}}* proxy,

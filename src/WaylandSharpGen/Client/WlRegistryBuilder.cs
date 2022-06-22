@@ -70,7 +70,7 @@ internal class WlRegistryBuilder
                                 IdentifierName("interfacePtr"),
                                 IdentifierName("Version"))),
                         IdentifierName("version")))),
-            // var proxy = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, version, 0, name, version)
+            // var proxy = WlProxyMarshalFlags(_proxyObject, 0, interfacePtr, version, 0, name, interfacePtr->Name, version)
             LocalDeclarationStatement(
                 VariableDeclaration(
                     IdentifierName(Identifier(TriviaList(), SyntaxKind.VarKeyword, "var", "var", TriviaList())))
@@ -93,6 +93,11 @@ internal class WlRegistryBuilder
                                     Literal(0))),
                                 Argument(
                                     IdentifierName("name")),
+                                Argument(
+                                    MemberAccessExpression(
+                                        SyntaxKind.PointerMemberAccessExpression,
+                                        IdentifierName("interfacePtr"),
+                                        IdentifierName("Name"))),
                                 Argument(
                                     IdentifierName("version"))})))))))),
             ReturnStatement(

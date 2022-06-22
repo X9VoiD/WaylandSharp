@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -78,12 +77,11 @@ internal static class Util
 
     public static Signature ToSignature(this ProtocolMessageDefinition definition)
     {
-        return ToSignature(definition.Arguments);
-    }
-
-    private static Signature ToSignature(ImmutableArray<ProtocolMessageArgumentDefinition> arguments)
-    {
         var signature = new StringBuilder();
+        var arguments = definition.Arguments;
+        if (definition.Since != 0)
+            signature.Append(definition.Since);
+
         for (var i = 0; i < arguments.Length; i++)
         {
             var argument = arguments[i];

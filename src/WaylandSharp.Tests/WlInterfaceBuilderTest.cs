@@ -79,6 +79,52 @@ public class WlInterfaceBuilderTest
     }
 
     [Fact]
+    public void CanBuildProtocolWithSince()
+    {
+        var doc = new XmlDocument();
+        var docText =
+            """
+            <protocol name="simple_protocol">
+                <interface name="simple_interface" version="2">
+                    <request name="foo" since="2">
+                        <arg name="bar" type="int" />
+                    </request>
+                </interface>
+            </protocol>
+            """;
+        doc.LoadXml(docText);
+
+        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var interfaceCacheBuilder = new WlInterfaceBuilder();
+
+        interfaceCacheBuilder.GenerateCache(protocolDefinition);
+        var classDeclaration = interfaceCacheBuilder.Build();
+        var fullText = classDeclaration.ToFullString();
+
+        var expected =
+            $$"""
+            public partial class WlInterface
+            {
+                public static readonly WlInterface SimpleInterface;
+                static WlInterface()
+                {
+                    SimpleInterface = new WlInterface.Builder("simple_interface", 2).Method("foo", "2i", new WlInterface? []{null});
+                }
+
+                public static WlInterface FromInterfaceName(string name)
+                {
+                    return name switch
+                    {
+                        "simple_interface" => SimpleInterface,
+                        _ => throw new ArgumentException($"Unknown interface name: {name}")};
+                }
+            }
+            """;
+
+        fullText.Should().Be(expected);
+    }
+
+    [Fact]
     public void CanBuildProtocolWithInOrderDeclaration()
     {
         var doc = new XmlDocument();
