@@ -41,6 +41,10 @@
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="WaylandSharpGen.props" Pack="true" PackagePath="build" Visible="false" />
     <None Include="../../README.md" Pack="true" PackagePath="" />
+    <Using Include="Microsoft.CodeAnalysis" />
+    <Using Include="Microsoft.CodeAnalysis.CSharp" />
+    <Using Include="Microsoft.CodeAnalysis.CSharp.Syntax" />
+    <Using Include="Microsoft.CodeAnalysis.CSharp.SyntaxFactory" Static="True" />
   </ItemGroup>
 
 </Project>
