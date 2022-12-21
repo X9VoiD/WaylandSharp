@@ -65,13 +65,6 @@ internal class WlBindingGenerator : IIncrementalGenerator
             .Where(static t => t.Item2 == GenerationOption.Client)
             .Select(static (t, cts) => t.Item1)
             .Collect();
-        // var serverPipeline = mainPipeline
-        //     .Where(static t => t.Item2 == GenerationOption.Server)
-        //     .Select(static (t, cts) => t.Item1)
-        //     .Collect();
-        // var unknownPipeline = mainPipeline
-        //     .Where(t => t.Item2 == GenerationOption.Unknown)
-        //     .Select(static (t, cts) => t.Item1);
 
         context.RegisterSourceOutput(clientPipeline, (ctx, a) =>
         {
@@ -87,15 +80,6 @@ internal class WlBindingGenerator : IIncrementalGenerator
 
             ctx.AddSource("WaylandSharp.Generated.cs", compilationUnit);
         });
-
-        // context.RegisterSourceOutput(serverPipeline, (ctx, a) =>
-        // {
-        //     var wlServerBuilder = new WlServerBuilder();
-        //     foreach (var protocol in a)
-        //     {
-        //         wlServerBuilder.ProcessProtocolDefinition(protocol);
-        //     }
-        // });
     }
 
     public static SyntaxList<MemberDeclarationSyntax> GenerateCommonDefinitions()
