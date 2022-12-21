@@ -4,6 +4,14 @@ An incremental source generator to automatically create bindings to Wayland
 using given protocol xml files.
 > `wayland.xml` should always be included to the list.
 
+## Compatibility
+
+| .NET Version | Compatibility |
+| ------------ | ------------- |
+| .NET | (6.0 and above) :heavy_check_mark: |
+| .NET Standard | :x: |
+| .NET Framework | :x: |
+
 ## Getting started
 
 Install WaylandSharp nuget package.
@@ -13,17 +21,6 @@ dotnet add package WaylandSharp
 
 Grab `wayland.xml` from [freedesktop.org](https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/protocol/wayland.xml). Drop the file into your project.
 
-Add this to your `csproj`
-```xml
-<PropertyGroup>
-  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-</PropertyGroup>
-
-<ItemGroup>
-  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WaylandProtocol" />
-  <AdditionalFiles Include="wayland.xml" WaylandProtocol="client" />
-</ItemGroup>
-```
 > No support for generating server-side bindings yet.
 
 Benefit! :bread:
