@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using WaylandSharpGen;
 using WaylandSharpGen.Client;
+using WaylandSharpGen.Xml;
 using static WaylandSharpGen.Client.WlClientIdentifiers;
 
 namespace WaylandSharp.Tests.Client;
@@ -39,7 +40,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -72,7 +73,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -145,7 +146,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -226,7 +227,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -273,7 +274,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -386,7 +387,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -426,7 +427,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -467,7 +468,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -522,7 +523,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -578,7 +579,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
@@ -663,7 +664,7 @@ public class WlClientBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         var wlClientBuilder = new WlClientBuilder();
         wlClientBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 

@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using WaylandSharpGen.Xml;
 using static WaylandSharpGen.WlCommonIdentifiers;
 namespace WaylandSharpGen;
 
@@ -9,10 +10,10 @@ internal class WlInterfaceBuilder
     private readonly List<MemberDeclarationSyntax> _members = new();
     private readonly List<SwitchExpressionArmSyntax> _switchArms = new();
 
-    public void GenerateCache(ProtocolDefinition protocolDefinition)
+    public void GenerateCache(Protocol protocolDefinition)
     {
         var protocolInterfaces =
-            new LinkedList<ProtocolInterfaceDefinition>(protocolDefinition.Interfaces);
+            new LinkedList<Interface>(protocolDefinition.Interfaces);
 
         while (protocolInterfaces.Any())
         {
@@ -132,9 +133,9 @@ internal class WlInterfaceBuilder
         return @interface;
     }
 
-    private void ProcessInterface(ProtocolDefinition protocolDefinition,
-                               LinkedList<ProtocolInterfaceDefinition> interfaces,
-                               ProtocolInterfaceDefinition interfaceDefinition)
+    private void ProcessInterface(Protocol protocolDefinition,
+                               LinkedList<Interface> interfaces,
+                               Interface interfaceDefinition)
     {
         var cacheIdentifier = interfaceDefinition.Name.SnakeToPascalCase();
 
@@ -227,18 +228,18 @@ internal class WlInterfaceBuilder
         _switchArms.Add(switchArm);
     }
 
-    private ExpressionSyntax RegisterMessage(ProtocolDefinition protocolDefinition,
-                                             LinkedList<ProtocolInterfaceDefinition> interfaces,
-                                             ProtocolInterfaceDefinition interfaceDefinition,
+    private ExpressionSyntax RegisterMessage(Protocol protocolDefinition,
+                                             LinkedList<Interface> interfaces,
+                                             Interface interfaceDefinition,
                                              ExpressionSyntax interfaceBuilderSyntax,
                                              string messageType,
-                                             ProtocolMessageDefinition message)
+                                             Method message)
     {
         EnsureDependencies(protocolDefinition, interfaces, interfaceDefinition, message);
 
         if (interfaceDefinition.Name == "wl_registry" && message.Name == "bind")
         {
-            message = new ProtocolMessageDefinition(
+            message = new Method(
                 message.Type,
                 message.Name,
                 message.OpCode,
@@ -246,19 +247,19 @@ internal class WlInterfaceBuilder
                 message.DocumentationSummary,
                 message.Documentation,
                 message.ExtraTypeAnnotation,
-                new ProtocolMessageArgumentDefinition[] {
+                new MethodArgument[] {
                     message.Arguments[0],
-                    new ProtocolMessageArgumentDefinition(
+                    new MethodArgument(
                         name: "interface",
-                        type: ProtocolMessageArgumentType.String,
+                        type: ArgumentType.String,
                         nullable: false,
                         @interface: null,
                         documentation: null,
                         @enum: null
                     ),
-                    new ProtocolMessageArgumentDefinition(
+                    new MethodArgument(
                         name: "version",
-                        type: ProtocolMessageArgumentType.Uint,
+                        type: ArgumentType.Uint,
                         nullable: false,
                         @interface: null,
                         documentation: null,
@@ -316,10 +317,10 @@ internal class WlInterfaceBuilder
         return expressionSyntax;
     }
 
-    private void EnsureDependencies(ProtocolDefinition protocolDefinition,
-                                    LinkedList<ProtocolInterfaceDefinition> interfaces,
-                                    ProtocolInterfaceDefinition interfaceDefinition,
-                                    ProtocolMessageDefinition @event)
+    private void EnsureDependencies(Protocol protocolDefinition,
+                                    LinkedList<Interface> interfaces,
+                                    Interface interfaceDefinition,
+                                    Method @event)
     {
         foreach (var argument in @event.Arguments)
         {
@@ -340,8 +341,8 @@ internal class WlInterfaceBuilder
         _declaredInterfaces.Add(interfaceDefinition.Name);
     }
 
-    private static LinkedListNode<ProtocolInterfaceDefinition>? PopInterface(
-        LinkedList<ProtocolInterfaceDefinition> interfaces,
+    private static LinkedListNode<Interface>? PopInterface(
+        LinkedList<Interface> interfaces,
         string interfaceName)
     {
         var node = interfaces.First;

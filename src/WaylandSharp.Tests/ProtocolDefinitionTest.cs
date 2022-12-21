@@ -1,5 +1,5 @@
 using System.Xml;
-using WaylandSharpGen;
+using WaylandSharpGen.Xml;
 
 namespace WaylandSharp.Tests;
 
@@ -17,7 +17,7 @@ public class ProtocolDefinitionTest
             </protocol>
             """);
 
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition = Protocol.FromXml(doc);
 
         protocolDefinition.Name.Should().Be("wayland");
         protocolDefinition.Interfaces.Should().BeEmpty();
@@ -33,7 +33,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         protocolInterfaceDefinition.Name.Should().Be("foo");
         protocolInterfaceDefinition.Version.Should().Be(1);
@@ -57,7 +57,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         protocolInterfaceDefinition.DocumentationSummary.Should().Be("a foo");
         protocolInterfaceDefinition.Documentation.Should().Be("The foo interface. blabla");
@@ -73,9 +73,9 @@ public class ProtocolDefinitionTest
             </request>
             """);
 
-        var protocolMessageDefinition = ProtocolMessageDefinition.FromXml(doc.DocumentElement!, 0);
+        var protocolMessageDefinition = Method.FromXml(doc.DocumentElement!, 0);
 
-        protocolMessageDefinition.Type.Should().Be(ProtocolMessageType.Request);
+        protocolMessageDefinition.Type.Should().Be(MethodType.Request);
         protocolMessageDefinition.Name.Should().Be("foo");
         protocolMessageDefinition.OpCode.Should().Be(0);
         protocolMessageDefinition.DocumentationSummary.Should().BeNull();
@@ -85,9 +85,9 @@ public class ProtocolDefinitionTest
     }
 
     [Theory]
-    [InlineData("request", ProtocolMessageType.Request)]
-    [InlineData("event", ProtocolMessageType.Event)]
-    internal void CanLoadMessageWithType(string type, ProtocolMessageType expectedType)
+    [InlineData("request", MethodType.Request)]
+    [InlineData("event", MethodType.Event)]
+    internal void CanLoadMessageWithType(string type, MethodType expectedType)
     {
         var doc = new XmlDocument();
         var docText =
@@ -97,7 +97,7 @@ public class ProtocolDefinitionTest
             """;
         doc.LoadXml(string.Format(docText, type));
 
-        var protocolMessageDefinition = ProtocolMessageDefinition.FromXml(doc.DocumentElement!, 0);
+        var protocolMessageDefinition = Method.FromXml(doc.DocumentElement!, 0);
 
         protocolMessageDefinition.Type.Should().Be(expectedType);
     }
@@ -115,7 +115,7 @@ public class ProtocolDefinitionTest
             </request>
             """);
 
-        var protocolMessageDefinition = ProtocolMessageDefinition.FromXml(doc.DocumentElement!, 0);
+        var protocolMessageDefinition = Method.FromXml(doc.DocumentElement!, 0);
 
         protocolMessageDefinition.DocumentationSummary.Should().Be("a foo");
         protocolMessageDefinition.Documentation.Should().Be("A foo method. blabla");
@@ -131,7 +131,7 @@ public class ProtocolDefinitionTest
             </request>
             """);
 
-        var protocolMessageDefinition = ProtocolMessageDefinition.FromXml(doc.DocumentElement!, 0);
+        var protocolMessageDefinition = Method.FromXml(doc.DocumentElement!, 0);
 
         protocolMessageDefinition.ExtraTypeAnnotation.Should().Be("bar");
     }
@@ -145,25 +145,25 @@ public class ProtocolDefinitionTest
             <arg name="foo" type="int" />
             """);
 
-        var protocolArgumentDefinition = ProtocolMessageArgumentDefinition.FromXml(doc.DocumentElement!);
+        var protocolArgumentDefinition = MethodArgument.FromXml(doc.DocumentElement!);
 
         protocolArgumentDefinition.Name.Should().Be("foo");
-        protocolArgumentDefinition.Type.Should().Be(ProtocolMessageArgumentType.Int);
+        protocolArgumentDefinition.Type.Should().Be(ArgumentType.Int);
         protocolArgumentDefinition.Nullable.Should().BeFalse();
         protocolArgumentDefinition.Interface.Should().BeNull();
         protocolArgumentDefinition.Documentation.Should().BeNull();
     }
 
     [Theory]
-    [InlineData("int", ProtocolMessageArgumentType.Int)]
-    [InlineData("uint", ProtocolMessageArgumentType.Uint)]
-    [InlineData("fixed", ProtocolMessageArgumentType.Fixed)]
-    [InlineData("string", ProtocolMessageArgumentType.String)]
-    [InlineData("object", ProtocolMessageArgumentType.Object)]
-    [InlineData("new_id", ProtocolMessageArgumentType.NewId)]
-    [InlineData("array", ProtocolMessageArgumentType.Array)]
-    [InlineData("fd", ProtocolMessageArgumentType.FD)]
-    internal void CanLoadArgumentWithType(string type, ProtocolMessageArgumentType expectedType)
+    [InlineData("int", ArgumentType.Int)]
+    [InlineData("uint", ArgumentType.Uint)]
+    [InlineData("fixed", ArgumentType.Fixed)]
+    [InlineData("string", ArgumentType.String)]
+    [InlineData("object", ArgumentType.Object)]
+    [InlineData("new_id", ArgumentType.NewId)]
+    [InlineData("array", ArgumentType.Array)]
+    [InlineData("fd", ArgumentType.FD)]
+    internal void CanLoadArgumentWithType(string type, ArgumentType expectedType)
     {
         var doc = new XmlDocument();
         var docText =
@@ -172,7 +172,7 @@ public class ProtocolDefinitionTest
             """;
         doc.LoadXml(string.Format(docText, type));
 
-        var protocolArgumentDefinition = ProtocolMessageArgumentDefinition.FromXml(doc.DocumentElement!);
+        var protocolArgumentDefinition = MethodArgument.FromXml(doc.DocumentElement!);
 
         protocolArgumentDefinition.Type.Should().Be(expectedType);
     }
@@ -189,7 +189,7 @@ public class ProtocolDefinitionTest
             """;
         doc.LoadXml(string.Format(docText, nullable));
 
-        var protocolArgumentDefinition = ProtocolMessageArgumentDefinition.FromXml(doc.DocumentElement!);
+        var protocolArgumentDefinition = MethodArgument.FromXml(doc.DocumentElement!);
 
         protocolArgumentDefinition.Nullable.Should().Be(expectedNullable);
     }
@@ -204,7 +204,7 @@ public class ProtocolDefinitionTest
             """;
         doc.LoadXml(docText);
 
-        var protocolArgumentDefinition = ProtocolMessageArgumentDefinition.FromXml(doc.DocumentElement!);
+        var protocolArgumentDefinition = MethodArgument.FromXml(doc.DocumentElement!);
 
         protocolArgumentDefinition.Interface.Should().Be("bar");
     }
@@ -219,7 +219,7 @@ public class ProtocolDefinitionTest
             """;
         doc.LoadXml(docText);
 
-        var protocolArgumentDefinition = ProtocolMessageArgumentDefinition.FromXml(doc.DocumentElement!);
+        var protocolArgumentDefinition = MethodArgument.FromXml(doc.DocumentElement!);
 
         protocolArgumentDefinition.Documentation.Should().Be("a foo");
     }
@@ -234,12 +234,12 @@ public class ProtocolDefinitionTest
             </enum>
             """);
 
-        var protocolEnumDefinition = ProtocolEnumDefinition.FromXml(doc.DocumentElement!);
+        var protocolEnumDefinition = WaylandSharpGen.Xml.Enum.FromXml(doc.DocumentElement!);
 
         protocolEnumDefinition.Name.Should().Be("foo");
         protocolEnumDefinition.DocumentationSummary.Should().BeNull();
         protocolEnumDefinition.Documentation.Should().BeNull();
-        protocolEnumDefinition.Entries.Should().BeEmpty();
+        protocolEnumDefinition.Members.Should().BeEmpty();
     }
 
     [Fact]
@@ -255,7 +255,7 @@ public class ProtocolDefinitionTest
             </enum>
             """);
 
-        var protocolEnumDefinition = ProtocolEnumDefinition.FromXml(doc.DocumentElement!);
+        var protocolEnumDefinition = WaylandSharpGen.Xml.Enum.FromXml(doc.DocumentElement!);
 
         protocolEnumDefinition.DocumentationSummary.Should().Be("a foo");
         protocolEnumDefinition.Documentation.Should().Be("The foo enum. blabla");
@@ -270,7 +270,7 @@ public class ProtocolDefinitionTest
             <entry name="foo" value="1" />
             """);
 
-        var protocolEnumEntryDefinition = ProtocolEnumEntryDefinition.FromXml(doc.DocumentElement!);
+        var protocolEnumEntryDefinition = EnumMember.FromXml(doc.DocumentElement!);
 
         protocolEnumEntryDefinition.Name.Should().Be("foo");
         protocolEnumEntryDefinition.Value.Should().Be(1);
@@ -285,7 +285,7 @@ public class ProtocolDefinitionTest
             <entry name="foo" value="1" summary="a foo"/>
             """);
 
-        var protocolEnumEntryDefinition = ProtocolEnumEntryDefinition.FromXml(doc.DocumentElement!);
+        var protocolEnumEntryDefinition = EnumMember.FromXml(doc.DocumentElement!);
 
         protocolEnumEntryDefinition.Documentation.Should().Be("a foo");
     }
@@ -304,7 +304,7 @@ public class ProtocolDefinitionTest
             </protocol>
             """);
 
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition = Protocol.FromXml(doc);
 
         protocolDefinition.Name.Should().Be("foo");
         protocolDefinition.Interfaces.Should().HaveCount(1);
@@ -327,8 +327,8 @@ public class ProtocolDefinitionTest
             </protocol>
             """);
 
-        var protocolDefinition1 = ProtocolDefinition.FromXml(doc);
-        var protocolDefinition2 = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition1 = Protocol.FromXml(doc);
+        var protocolDefinition2 = Protocol.FromXml(doc);
 
         (protocolDefinition1 == protocolDefinition2).Should().BeTrue();
     }
@@ -345,7 +345,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         protocolInterfaceDefinition.Name.Should().Be("foo");
         protocolInterfaceDefinition.Version.Should().Be(1);
@@ -368,7 +368,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         protocolInterfaceDefinition.Name.Should().Be("foo");
         protocolInterfaceDefinition.Version.Should().Be(1);
@@ -377,7 +377,7 @@ public class ProtocolDefinitionTest
         var protocolMessageDefinition = protocolInterfaceDefinition.Requests.First();
 
         protocolMessageDefinition.Name.Should().Be("bar");
-        protocolMessageDefinition.Type.Should().Be(ProtocolMessageType.Request);
+        protocolMessageDefinition.Type.Should().Be(MethodType.Request);
     }
 
     [Fact]
@@ -394,7 +394,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         var barRequest = protocolInterfaceDefinition.Requests.First(r => r.Name == "bar");
         var bazRequest = protocolInterfaceDefinition.Requests.First(r => r.Name == "baz");
@@ -421,7 +421,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         var barRequest = protocolInterfaceDefinition.Requests.First(r => r.Name == "bar");
         var bazRequest = protocolInterfaceDefinition.Events.First(r => r.Name == "baz");
@@ -446,7 +446,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         protocolInterfaceDefinition.Name.Should().Be("foo");
         protocolInterfaceDefinition.Version.Should().Be(1);
@@ -470,7 +470,7 @@ public class ProtocolDefinitionTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
 
         var protocolMessageDefinition = protocolInterfaceDefinition.Requests.First();
 
@@ -479,7 +479,7 @@ public class ProtocolDefinitionTest
         var protocolArgumentDefinition = protocolMessageDefinition.Arguments.First();
 
         protocolArgumentDefinition.Name.Should().Be("baz");
-        protocolArgumentDefinition.Type.Should().Be(ProtocolMessageArgumentType.Int);
+        protocolArgumentDefinition.Type.Should().Be(ArgumentType.Int);
     }
 
     [Fact]
@@ -493,12 +493,12 @@ public class ProtocolDefinitionTest
             </enum>
             """);
 
-        var protocolEnumDefinition = ProtocolEnumDefinition.FromXml(doc.DocumentElement!);
+        var protocolEnumDefinition = WaylandSharpGen.Xml.Enum.FromXml(doc.DocumentElement!);
 
         protocolEnumDefinition.Name.Should().Be("foo");
-        protocolEnumDefinition.Entries.Should().HaveCount(1);
+        protocolEnumDefinition.Members.Should().HaveCount(1);
 
-        var protocolEnumEntryDefinition = protocolEnumDefinition.Entries.First();
+        var protocolEnumEntryDefinition = protocolEnumDefinition.Members.First();
 
         protocolEnumEntryDefinition.Name.Should().Be("bar");
         protocolEnumEntryDefinition.Value.Should().Be(1);

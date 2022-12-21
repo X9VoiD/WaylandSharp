@@ -1,3 +1,4 @@
+using WaylandSharpGen.Xml;
 using static WaylandSharpGen.Client.WlClientIdentifiers;
 using static WaylandSharpGen.WlCommonIdentifiers;
 
@@ -145,7 +146,7 @@ internal class WlRegistryBuilder
         return wlRegistryClass.AddMembers(wlRegistryClassBindMethod);
     }
 
-    public void ProcessInterfaceDefinition(ProtocolInterfaceDefinition definition)
+    public void ProcessInterfaceDefinition(Interface definition)
     {
         _switchExpressionArmSyntaxes.Add(
             SwitchExpressionArm(

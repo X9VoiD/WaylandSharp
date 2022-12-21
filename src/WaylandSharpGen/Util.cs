@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using WaylandSharpGen.Xml;
 
 namespace WaylandSharpGen;
 
@@ -75,7 +76,7 @@ internal static class Util
         }
     }
 
-    public static Signature ToSignature(this ProtocolMessageDefinition definition)
+    public static Signature ToSignature(this Method definition)
     {
         var signature = new StringBuilder();
         var arguments = definition.Arguments;
@@ -87,14 +88,14 @@ internal static class Util
             var argument = arguments[i];
             var type = argument.Type switch
             {
-                ProtocolMessageArgumentType.Int => "i",
-                ProtocolMessageArgumentType.Uint => "u",
-                ProtocolMessageArgumentType.Fixed => "f",
-                ProtocolMessageArgumentType.String => "s",
-                ProtocolMessageArgumentType.Object => "o",
-                ProtocolMessageArgumentType.NewId => "n",
-                ProtocolMessageArgumentType.Array => "a",
-                ProtocolMessageArgumentType.FD => "h",
+                ArgumentType.Int => "i",
+                ArgumentType.Uint => "u",
+                ArgumentType.Fixed => "f",
+                ArgumentType.String => "s",
+                ArgumentType.Object => "o",
+                ArgumentType.NewId => "n",
+                ArgumentType.Array => "a",
+                ArgumentType.FD => "h",
                 _ => throw new InvalidOperationException($"Invalid type encountered: {argument.Type}"),
             };
             signature.Append(argument.Nullable ? $"?{type}" : type);

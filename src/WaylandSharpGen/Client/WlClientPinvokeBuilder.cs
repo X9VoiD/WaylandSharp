@@ -1,5 +1,6 @@
 using static WaylandSharpGen.WlCommonIdentifiers;
 using static WaylandSharpGen.Client.WlClientIdentifiers;
+using WaylandSharpGen.Xml;
 
 namespace WaylandSharpGen.Client;
 
@@ -16,7 +17,7 @@ internal class WlClientPInvokeBuilder
         _syntax = root.Members.OfType<ClassDeclarationSyntax>().First();
     }
 
-    public void GenerateMarshal(ProtocolMessageDefinition definition)
+    public void GenerateMarshal(Method definition)
     {
         var signature = definition.ToSignature();
         var hash = signature.AsHash();
@@ -45,10 +46,10 @@ internal class WlClientPInvokeBuilder
         return _syntax.WithMembers(memberDeclarationList).NormalizeWhitespace(eol: Environment.NewLine);
     }
 
-    internal MethodDeclarationSyntax GetMethodDeclaration(ProtocolMessageDefinition definition)
+    internal MethodDeclarationSyntax GetMethodDeclaration(Method definition)
     {
         var signature = definition.ToSignature().AsHash();
-        return !definition.Arguments.Any(a => a.Type == ProtocolMessageArgumentType.Array)
+        return !definition.Arguments.Any(a => a.Type == ArgumentType.Array)
             ? _marshal[signature].NormalizeWhitespace(eol: Environment.NewLine)
             : throw new NotSupportedException();
     }
@@ -88,7 +89,7 @@ internal class WlClientPInvokeBuilder
     //     _marshal.Add(signature, method);
     // }
 
-    private void GenerateMarshalFlags(ProtocolMessageDefinition definition, string hash)
+    private void GenerateMarshalFlags(Method definition, string hash)
     {
         /*
          * [DllImport(LibWaylandClient, EntryPoint = "wl_proxy_marshal_flags", ExactSpelling = true)]
@@ -131,18 +132,18 @@ internal class WlClientPInvokeBuilder
         _marshal.Add(hash, method);
     }
 
-    private static TypeSyntax GetMarshalledType(ProtocolMessageArgumentDefinition argument)
+    private static TypeSyntax GetMarshalledType(MethodArgument argument)
     {
         return argument.Type switch
         {
-            ProtocolMessageArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
-            ProtocolMessageArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
-            ProtocolMessageArgumentType.Fixed => PredefinedType(Token(SyntaxKind.IntKeyword)),
-            ProtocolMessageArgumentType.String => PointerType(PredefinedType(Token(SyntaxKind.CharKeyword))),
-            ProtocolMessageArgumentType.Object => _WlProxyPointerSyntax,
-            ProtocolMessageArgumentType.NewId => _WlProxyPointerSyntax,
-            ProtocolMessageArgumentType.Array => _WlArrayPointerSyntax,
-            ProtocolMessageArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
+            ArgumentType.Fixed => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.String => PointerType(PredefinedType(Token(SyntaxKind.CharKeyword))),
+            ArgumentType.Object => _WlProxyPointerSyntax,
+            ArgumentType.NewId => _WlProxyPointerSyntax,
+            ArgumentType.Array => _WlArrayPointerSyntax,
+            ArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
             _ => throw new InvalidOperationException($"Invalid type encountered: {argument.Type}"),
         };
     }

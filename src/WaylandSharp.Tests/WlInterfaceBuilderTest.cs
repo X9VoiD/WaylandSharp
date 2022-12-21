@@ -1,5 +1,6 @@
 using System.Xml;
 using WaylandSharpGen;
+using WaylandSharpGen.Xml;
 
 namespace WaylandSharp.Tests;
 
@@ -48,7 +49,7 @@ public class WlInterfaceBuilderTest
             """, messageType);
         doc.LoadXml(docText);
 
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition = Protocol.FromXml(doc);
         var interfaceCacheBuilder = new WlInterfaceBuilder();
 
         interfaceCacheBuilder.GenerateCache(protocolDefinition);
@@ -94,7 +95,7 @@ public class WlInterfaceBuilderTest
             """;
         doc.LoadXml(docText);
 
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition = Protocol.FromXml(doc);
         var interfaceCacheBuilder = new WlInterfaceBuilder();
 
         interfaceCacheBuilder.GenerateCache(protocolDefinition);
@@ -145,7 +146,7 @@ public class WlInterfaceBuilderTest
             """;
         doc.LoadXml(docText);
 
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition = Protocol.FromXml(doc);
         var interfaceCacheBuilder = new WlInterfaceBuilder();
 
         interfaceCacheBuilder.GenerateCache(protocolDefinition);
@@ -199,7 +200,7 @@ public class WlInterfaceBuilderTest
             """;
         doc.LoadXml(docText);
 
-        var protocolDefinition = ProtocolDefinition.FromXml(doc);
+        var protocolDefinition = Protocol.FromXml(doc);
         var interfaceCacheBuilder = new WlInterfaceBuilder();
 
         interfaceCacheBuilder.GenerateCache(protocolDefinition);

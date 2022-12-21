@@ -1,7 +1,7 @@
 using System.Xml;
 using Microsoft.CodeAnalysis;
-using WaylandSharpGen;
 using WaylandSharpGen.Client;
+using WaylandSharpGen.Xml;
 
 namespace WaylandSharp.Tests.Client;
 
@@ -51,7 +51,7 @@ public class WlRegistryBuilderTest
             </interface>
             """);
 
-        var protocolInterfaceDefinition = ProtocolInterfaceDefinition.FromXml(doc.DocumentElement!);
+        var protocolInterfaceDefinition = Interface.FromXml(doc.DocumentElement!);
         wlRegistryBuilder.ProcessInterfaceDefinition(protocolInterfaceDefinition);
 
         var wlRegistryClass = wlRegistryBuilder.Build();

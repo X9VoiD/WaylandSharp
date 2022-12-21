@@ -1,6 +1,6 @@
 using System.Xml;
-using WaylandSharpGen;
 using WaylandSharpGen.Client;
+using WaylandSharpGen.Xml;
 
 namespace WaylandSharp.Tests.Client;
 
@@ -31,7 +31,7 @@ public class WlClientPinvokeBuilderTest
             """;
         doc.LoadXml(string.Format(docText, type));
 
-        var protocolMessageDefinition = ProtocolMessageDefinition.FromXml(doc.DocumentElement!, 0);
+        var protocolMessageDefinition = Method.FromXml(doc.DocumentElement!, 0);
         var clientPInvokeBuilder = new WlClientPInvokeBuilder();
 
         clientPInvokeBuilder.GenerateMarshal(protocolMessageDefinition);
@@ -59,7 +59,7 @@ public class WlClientPinvokeBuilderTest
             </request>
             """);
 
-        var protocolMessageDefinition = ProtocolMessageDefinition.FromXml(doc.DocumentElement!, 0);
+        var protocolMessageDefinition = Method.FromXml(doc.DocumentElement!, 0);
         var clientPInvokeBuilder = new WlClientPInvokeBuilder();
 
         clientPInvokeBuilder.GenerateMarshal(protocolMessageDefinition);

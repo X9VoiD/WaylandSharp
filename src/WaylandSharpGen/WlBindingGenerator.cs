@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Text;
 using System.Xml;
 using WaylandSharpGen.Client;
+using WaylandSharpGen.Xml;
 using static WaylandSharpGen.WlCommonIdentifiers;
 
 namespace WaylandSharpGen;
@@ -58,7 +59,7 @@ internal class WlBindingGenerator : IIncrementalGenerator
                 var xml = t.Item1.GetText(cts)!.ToString();
                 xmlDoc.LoadXml(xml);
 
-                return (ProtocolDefinition.FromXml(xmlDoc), t.Item2);
+                return (Protocol.FromXml(xmlDoc), t.Item2);
             });
 
         var clientPipeline = mainPipeline

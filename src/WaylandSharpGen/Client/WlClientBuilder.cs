@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using WaylandSharpGen.Xml;
 using static WaylandSharpGen.Client.WlClientIdentifiers;
 using static WaylandSharpGen.WlCommonIdentifiers;
 
@@ -108,7 +109,7 @@ internal class WlClientBuilder
             .NormalizeWhitespace(eol: Environment.NewLine);
     }
 
-    public void ProcessProtocolDefinition(ProtocolDefinition protocolDefinition)
+    public void ProcessProtocolDefinition(Protocol protocolDefinition)
     {
         _interfaceBuilder.GenerateCache(protocolDefinition);
         foreach (var interfaceDefinition in protocolDefinition.Interfaces)
@@ -118,7 +119,7 @@ internal class WlClientBuilder
     }
 
     internal void ProcessInterfaceDefinition(
-        ProtocolInterfaceDefinition interfaceDefinition)
+        Interface interfaceDefinition)
     {
         _registryBuilder.ProcessInterfaceDefinition(interfaceDefinition);
 
@@ -189,7 +190,7 @@ internal class WlClientBuilder
             var enumName = interfaceName + enumDefinition.Name.SnakeToPascalCase();
             var enumMembers = new List<EnumMemberDeclarationSyntax>();
 
-            foreach (var enumMember in enumDefinition.Entries)
+            foreach (var enumMember in enumDefinition.Members)
             {
                 var enumMemberDeclaration =
                     EnumMemberDeclaration(
@@ -509,7 +510,7 @@ internal class WlClientBuilder
             var requestParameters = new List<ParameterSyntax>();
             TypeSyntax returnType;
             ArgumentSyntax interfacePtrArgument;
-            var newIdArg = requestDefinition.Arguments.FirstOrDefault(a => a.Type == ProtocolMessageArgumentType.NewId);
+            var newIdArg = requestDefinition.Arguments.FirstOrDefault(a => a.Type == ArgumentType.NewId);
 
             // CheckIfDisposed();
             statements.Add(ExpressionStatement(InvocationExpression(
@@ -575,7 +576,7 @@ internal class WlClientBuilder
             {
                 var requestArg = requestDefinition.Arguments[ii];
 
-                if (requestArg.Type != ProtocolMessageArgumentType.NewId)
+                if (requestArg.Type != ArgumentType.NewId)
                 {
                     var parameter =
                         Parameter(Identifier(requestArg.Name.Escape()))
@@ -745,56 +746,56 @@ internal class WlClientBuilder
                             _WlArgumentPointerSyntax)})));
     }
 
-    private static TypeSyntax GetEventTypeMapping(string interfaceName, ProtocolMessageArgumentDefinition messageArgumentDefinition)
+    private static TypeSyntax GetEventTypeMapping(string interfaceName, MethodArgument messageArgumentDefinition)
     {
         if (messageArgumentDefinition.Enum is { } @enum)
             return IdentifierName(@enum.ParseEnum(interfaceName)!);
 
         return messageArgumentDefinition.Type switch
         {
-            ProtocolMessageArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
-            ProtocolMessageArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
-            ProtocolMessageArgumentType.Fixed => PredefinedType(Token(SyntaxKind.DoubleKeyword)),
-            ProtocolMessageArgumentType.String => PredefinedType(Token(SyntaxKind.StringKeyword)),
-            ProtocolMessageArgumentType.Object => messageArgumentDefinition.Interface switch
+            ArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
+            ArgumentType.Fixed => PredefinedType(Token(SyntaxKind.DoubleKeyword)),
+            ArgumentType.String => PredefinedType(Token(SyntaxKind.StringKeyword)),
+            ArgumentType.Object => messageArgumentDefinition.Interface switch
             {
                 null => WlClientObjectTypeSyntax,
                 _ => IdentifierName(messageArgumentDefinition.Interface.SnakeToPascalCase())
             },
-            ProtocolMessageArgumentType.NewId => messageArgumentDefinition.Interface switch
+            ArgumentType.NewId => messageArgumentDefinition.Interface switch
             {
                 null => throw new InvalidOperationException("NewId argument must have an interface"),
                 _ => IdentifierName(messageArgumentDefinition.Interface.SnakeToPascalCase())
             },
-            ProtocolMessageArgumentType.Array => IdentifierName(WlArrayTypeName),
-            ProtocolMessageArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Array => IdentifierName(WlArrayTypeName),
+            ArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
             _ => throw new NotImplementedException()
         };
     }
 
-    private static TypeSyntax GetRequestTypeMapping(string interfaceName, ProtocolMessageArgumentDefinition messageArgumentDefinition)
+    private static TypeSyntax GetRequestTypeMapping(string interfaceName, MethodArgument messageArgumentDefinition)
     {
         if (messageArgumentDefinition.Enum is not null)
             return IdentifierName(messageArgumentDefinition.Enum.ParseEnum(interfaceName)!);
 
         return messageArgumentDefinition.Type switch
         {
-            ProtocolMessageArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
-            ProtocolMessageArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
-            ProtocolMessageArgumentType.Fixed => PredefinedType(Token(SyntaxKind.DoubleKeyword)),
-            ProtocolMessageArgumentType.String => PredefinedType(Token(SyntaxKind.StringKeyword)),
-            ProtocolMessageArgumentType.Object => messageArgumentDefinition.Interface switch
+            ArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
+            ArgumentType.Fixed => PredefinedType(Token(SyntaxKind.DoubleKeyword)),
+            ArgumentType.String => PredefinedType(Token(SyntaxKind.StringKeyword)),
+            ArgumentType.Object => messageArgumentDefinition.Interface switch
             {
                 null => WlClientObjectTypeSyntax,
                 _ => IdentifierName(messageArgumentDefinition.Interface.SnakeToPascalCase())
             },
-            ProtocolMessageArgumentType.Array => WlArrayTypeSyntax,
-            ProtocolMessageArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Array => WlArrayTypeSyntax,
+            ArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
             _ => throw new NotImplementedException()
         };
     }
 
-    private static ExpressionSyntax GetEventArgumentConversionExpression(string interfaceName, int argIndex, ProtocolMessageArgumentDefinition argDefinition)
+    private static ExpressionSyntax GetEventArgumentConversionExpression(string interfaceName, int argIndex, MethodArgument argDefinition)
     {
         static MemberAccessExpressionSyntax accessArgElementAt(int index, string memberName)
         {
@@ -920,7 +921,7 @@ internal class WlClientBuilder
 
         if (argDefinition.Enum is not null)
         {
-            var accessor = argDefinition.Type == ProtocolMessageArgumentType.Int
+            var accessor = argDefinition.Type == ArgumentType.Int
                 ? accessArgElementAt(argIndex, "i")
                 : accessArgElementAt(argIndex, "u");
 
@@ -929,19 +930,19 @@ internal class WlClientBuilder
 
         return argType switch
         {
-            ProtocolMessageArgumentType.Int => accessArgElementAt(argIndex, "i"),
-            ProtocolMessageArgumentType.Uint => accessArgElementAt(argIndex, "u"),
-            ProtocolMessageArgumentType.Fixed => convertWlFixed(argIndex),
-            ProtocolMessageArgumentType.String => convertCharPointer(argIndex),
-            ProtocolMessageArgumentType.Object => convertObject(argIndex, argDefinition.Interface),
-            ProtocolMessageArgumentType.NewId => convertNewId(argIndex, argDefinition.Interface),
-            ProtocolMessageArgumentType.Array => convertArray(argIndex),
-            ProtocolMessageArgumentType.FD => accessArgElementAt(argIndex, "h"),
+            ArgumentType.Int => accessArgElementAt(argIndex, "i"),
+            ArgumentType.Uint => accessArgElementAt(argIndex, "u"),
+            ArgumentType.Fixed => convertWlFixed(argIndex),
+            ArgumentType.String => convertCharPointer(argIndex),
+            ArgumentType.Object => convertObject(argIndex, argDefinition.Interface),
+            ArgumentType.NewId => convertNewId(argIndex, argDefinition.Interface),
+            ArgumentType.Array => convertArray(argIndex),
+            ArgumentType.FD => accessArgElementAt(argIndex, "h"),
             _ => throw new NotSupportedException("Cannot marshal unknown argument type")
         };
     }
 
-    private static ExpressionSyntax GetRequestArgumentConversionExpression(ProtocolMessageArgumentDefinition argDefinition)
+    private static ExpressionSyntax GetRequestArgumentConversionExpression(MethodArgument argDefinition)
     {
         var identifier = IdentifierName(argDefinition.Name);
 
@@ -1007,15 +1008,15 @@ internal class WlClientBuilder
                         SyntaxKind.NullLiteralExpression));
         }
 
-        static ExpressionSyntax convertEnum(IdentifierNameSyntax identifier, ProtocolMessageArgumentType type)
+        static ExpressionSyntax convertEnum(IdentifierNameSyntax identifier, ArgumentType type)
         {
             return
                 CastExpression(
                     PredefinedType(
                         type switch
                         {
-                            ProtocolMessageArgumentType.Int => Token(SyntaxKind.IntKeyword),
-                            ProtocolMessageArgumentType.Uint => Token(SyntaxKind.UIntKeyword),
+                            ArgumentType.Int => Token(SyntaxKind.IntKeyword),
+                            ArgumentType.Uint => Token(SyntaxKind.UIntKeyword),
                             _ => Token(SyntaxKind.UIntKeyword)
                         }),
                     identifier);
@@ -1026,14 +1027,14 @@ internal class WlClientBuilder
 
         return argDefinition.Type switch
         {
-            ProtocolMessageArgumentType.Int => identifier,
-            ProtocolMessageArgumentType.Uint => identifier,
-            ProtocolMessageArgumentType.Fixed => convertWlFixed(identifier),
-            ProtocolMessageArgumentType.String => convertCharPointer(identifier),
-            ProtocolMessageArgumentType.Array => convertWlArray(identifier),
-            ProtocolMessageArgumentType.Object => convertWlObject(identifier),
-            ProtocolMessageArgumentType.NewId => convertNewId(),
-            ProtocolMessageArgumentType.FD => identifier,
+            ArgumentType.Int => identifier,
+            ArgumentType.Uint => identifier,
+            ArgumentType.Fixed => convertWlFixed(identifier),
+            ArgumentType.String => convertCharPointer(identifier),
+            ArgumentType.Array => convertWlArray(identifier),
+            ArgumentType.Object => convertWlObject(identifier),
+            ArgumentType.NewId => convertNewId(),
+            ArgumentType.FD => identifier,
             _ => throw new NotSupportedException("Cannot marshal unknown argument type")
         };
     }
