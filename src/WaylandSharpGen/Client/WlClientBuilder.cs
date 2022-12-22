@@ -134,26 +134,51 @@ internal class WlClientBuilder
 
         var protocolClassConstructor =
             ConstructorDeclaration(
-                Identifier(interfaceName.Escape()))
-            .WithModifiers(
-                TokenList(
-                    Token(SyntaxKind.InternalKeyword)))
-            .WithParameterList(
-                ParameterList(
-                    SingletonSeparatedList(
-                        Parameter(
-                            Identifier("proxyObject"))
-                        .WithType(
-                            _WlProxyPointerSyntax))))
-            .WithInitializer(
-                ConstructorInitializer(
-                    SyntaxKind.BaseConstructorInitializer,
-                    ArgumentList(
+                    Identifier(interfaceName.Escape()))
+               .WithModifiers(
+                    TokenList(
+                        Token(SyntaxKind.PublicKeyword)))
+               .WithParameterList(
+                    ParameterList(
                         SingletonSeparatedList(
-                            Argument(
-                                IdentifierName("proxyObject"))))))
-            .WithBody(
-                Block());
+                            Parameter(
+                                    Identifier("proxyObject"))
+                               .WithType(
+                                    _WlIntPtrTypeSyntax))))
+               .WithInitializer(
+                    ConstructorInitializer(
+                        SyntaxKind.BaseConstructorInitializer,
+                        ArgumentList(
+                            SingletonSeparatedList(
+                                Argument(
+                                    CastExpression(_WlProxyPointerSyntax, IdentifierName("proxyObject")))))))
+               .WithBody(
+                    Block());
+
+        members.Add(protocolClassConstructor);
+
+        protocolClassConstructor =
+            ConstructorDeclaration(
+                    Identifier(interfaceName.Escape()))
+               .WithModifiers(
+                    TokenList(
+                        Token(SyntaxKind.InternalKeyword)))
+               .WithParameterList(
+                    ParameterList(
+                        SingletonSeparatedList(
+                            Parameter(
+                                    Identifier("proxyObject"))
+                               .WithType(
+                                    _WlProxyPointerSyntax))))
+               .WithInitializer(
+                    ConstructorInitializer(
+                        SyntaxKind.BaseConstructorInitializer,
+                        ArgumentList(
+                            SingletonSeparatedList(
+                                Argument(
+                                    IdentifierName("proxyObject"))))))
+               .WithBody(
+                    Block());
 
         members.Add(protocolClassConstructor);
 
