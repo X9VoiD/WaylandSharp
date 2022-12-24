@@ -12,6 +12,9 @@ internal static class WlClientIdentifiers
     public static readonly IdentifierNameSyntax _WlProxyTypeSyntax = IdentifierName(_WlProxyTypeName);
     public static readonly PointerTypeSyntax _WlProxyPointerSyntax = PointerType(_WlProxyTypeSyntax);
 
+    public const string _WlIntPtrTypeName = "System.IntPtr";
+    public static readonly IdentifierNameSyntax _WlIntPtrTypeSyntax = IdentifierName(_WlIntPtrTypeName);
+
     public const string WlDisplayTypeName = "WlDisplay";
     public static readonly IdentifierNameSyntax WlDisplayTypeSyntax = IdentifierName(WlDisplayTypeName);
 
