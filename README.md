@@ -21,9 +21,20 @@ dotnet add package WaylandSharp
 
 Grab `wayland.xml` from [freedesktop.org](https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/protocol/wayland.xml). Drop the file into your project.
 
+Add the following to your `.csproj`:
+```xml
+<ItemGroup>
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="WaylandProtocol" />
+    <AdditionalFiles Include="wayland.xml" WaylandProtocol="client" />
+    <!-- Add additional protocol files with more AdditionalFiles tags -->
+</ItemGroup>
+```
+
 > No support for generating server-side bindings yet.
 
 Benefit! :bread:
+
+
 
 ## Quick Guide
 
