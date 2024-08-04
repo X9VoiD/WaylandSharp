@@ -358,11 +358,15 @@ internal static unsafe class Client
     [DllImport(LibWaylandClient, EntryPoint = "wl_proxy_create_wrapper", ExactSpelling = true)]
     public static extern void* WlProxyCreateWrapper(void* proxy);
 
-    [DllImport(LibWaylandClient, EntryPoint = "wl_fixed_to_double", ExactSpelling = true)]
-    public static extern double WlFixedToDouble(_WlFixedT f);
+    public static double WlFixedToDouble(_WlFixedT f)
+    {
+        return f.ToDouble();
+    }
 
-    [DllImport(LibWaylandClient, EntryPoint = "wl_fixed_from_double", ExactSpelling = true)]
-    public static extern _WlFixedT WlFixedFromDouble(double d);
+    public static _WlFixedT WlFixedFromDouble(double d)
+    {
+        return new _WlFixedT(d);
+    }
 }
 """;
 }
