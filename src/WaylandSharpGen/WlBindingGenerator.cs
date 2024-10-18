@@ -284,6 +284,16 @@ internal readonly struct {{_WlFixedTTypeName}} : IEquatable<{{_WlFixedTTypeName}
 {
     private readonly uint _value;
 
+    public {{_WlFixedTTypeName}}(double d)
+    {
+        _value = (uint) (d * 256.0);
+    }
+
+    public double ToDouble()
+    {
+        return _value / 256.0;
+    }
+
     public bool Equals({{_WlFixedTTypeName}} other)
     {
         return _value == other._value;

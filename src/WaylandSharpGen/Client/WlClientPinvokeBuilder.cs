@@ -6,7 +6,7 @@ namespace WaylandSharpGen.Client;
 
 internal class WlClientPInvokeBuilder
 {
-    private readonly Dictionary<string, MethodDeclarationSyntax> _marshal = new();
+    private readonly Dictionary<string, MethodDeclarationSyntax> _marshal = [];
 
     private readonly ClassDeclarationSyntax _syntax;
 
@@ -138,7 +138,7 @@ internal class WlClientPInvokeBuilder
         {
             ArgumentType.Int => PredefinedType(Token(SyntaxKind.IntKeyword)),
             ArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
-            ArgumentType.Fixed => PredefinedType(Token(SyntaxKind.IntKeyword)),
+            ArgumentType.Fixed => _WlFixedTTypeSyntax,
             ArgumentType.String => PointerType(PredefinedType(Token(SyntaxKind.CharKeyword))),
             ArgumentType.Object => _WlProxyPointerSyntax,
             ArgumentType.NewId => _WlProxyPointerSyntax,
@@ -358,11 +358,15 @@ internal static unsafe class Client
     [DllImport(LibWaylandClient, EntryPoint = "wl_proxy_create_wrapper", ExactSpelling = true)]
     public static extern void* WlProxyCreateWrapper(void* proxy);
 
-    [DllImport(LibWaylandClient, EntryPoint = "wl_fixed_to_double", ExactSpelling = true)]
-    public static extern double WlFixedToDouble(_WlFixedT f);
+    public static double WlFixedToDouble(_WlFixedT f)
+    {
+        return f.ToDouble();
+    }
 
-    [DllImport(LibWaylandClient, EntryPoint = "wl_fixed_from_double", ExactSpelling = true)]
-    public static extern _WlFixedT WlFixedFromDouble(double d);
+   public static _WlFixedT WlFixedFromDouble(double d)
+    {
+        return new _WlFixedT(d);
+    }
 }
 """;
 }
