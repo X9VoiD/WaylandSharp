@@ -841,7 +841,7 @@ internal class WlClientBuilder
                                 accessArgElementAt(index, "s")))))));
         }
 
-        static ExpressionSyntax convertObject(int index, string? interfaceName)
+        static ExpressionSyntax convertObject(int index, string? interfaceName, bool isNullable)
         {
             if (interfaceName == null)
             {
@@ -850,7 +850,7 @@ internal class WlClientBuilder
                         MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             WlClientObjectTypeSyntax,
-                            IdentifierName("GetObject")))
+                            IdentifierName(isNullable ? "GetNullableObject" : "GetObject")))
                     .WithArgumentList(
                         ArgumentList(
                             SingletonSeparatedList(
@@ -866,7 +866,7 @@ internal class WlClientBuilder
                         SyntaxKind.SimpleMemberAccessExpression,
                         WlClientObjectTypeSyntax,
                         GenericName(
-                            Identifier("GetObject"))
+                            Identifier(isNullable ? "GetNullableObject" : "GetObject"))
                         .WithTypeArgumentList(
                             TypeArgumentList(
                                 SingletonSeparatedList<TypeSyntax>(
@@ -934,7 +934,7 @@ internal class WlClientBuilder
             ArgumentType.Uint => accessArgElementAt(argIndex, "u"),
             ArgumentType.Fixed => convertWlFixed(argIndex),
             ArgumentType.String => convertCharPointer(argIndex),
-            ArgumentType.Object => convertObject(argIndex, argDefinition.Interface),
+            ArgumentType.Object => convertObject(argIndex, argDefinition.Interface, argDefinition.Nullable),
             ArgumentType.NewId => convertNewId(argIndex, argDefinition.Interface),
             ArgumentType.Array => convertArray(argIndex),
             ArgumentType.FD => accessArgElementAt(argIndex, "h"),
@@ -1117,6 +1117,13 @@ public abstract unsafe class {{WlClientObjectTypeName}} : IEquatable<{{WlClientO
 
     internal static T GetObject<T>({{_WlProxyTypeName}}* proxyObject) where T : {{WlClientObjectTypeName}}
     {
+        return (T)GetObject(proxyObject);
+    }
+
+    internal static T? GetNullableObject<T>({{_WlProxyTypeName}}* proxyObject) where T : {{WlClientObjectTypeName}}
+    {
+        if (proxyObject == null) return null;
+
         return (T)GetObject(proxyObject);
     }
 
