@@ -36,7 +36,7 @@ internal sealed record MethodArgument
             "fd" => ArgumentType.FD,
             _ => throw new InvalidOperationException($"Invalid message argument type: {element.GetAttribute("type")}")
         };
-        var nullable = element.GetAttribute("nullable") == "true";
+        var nullable = element.GetAttribute("nullable") == "true" || element.GetAttribute("allow-null") == "true";
         var interfaceName = element.GetAttribute("interface").DefiniteNull();
         var documentation = element.GetAttribute("summary").DefiniteNull();
         var enumName = element.GetAttribute("enum").DefiniteNull();
