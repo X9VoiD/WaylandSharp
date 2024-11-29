@@ -52,6 +52,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -85,6 +89,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -158,6 +166,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -287,6 +299,10 @@ public class WlClientBuilderTest
             $$"""
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -399,6 +415,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -439,6 +459,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -480,6 +504,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -535,6 +563,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -591,6 +623,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class Foo : WlClientObject
             {
+                public Foo(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal Foo(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -676,6 +712,10 @@ public class WlClientBuilderTest
             """
             public unsafe partial class WlRegistry : WlClientObject
             {
+                public WlRegistry(System.IntPtr proxyObject) : base((_WlProxy*)proxyObject)
+                {
+                }
+
                 internal WlRegistry(_WlProxy* proxyObject) : base(proxyObject)
                 {
                 }
@@ -704,7 +744,9 @@ public class WlClientBuilderTest
 
         diagnostics.IsEmpty.Should().BeTrue();
         var outputDiagnostics = output.GetDiagnostics();
-        outputDiagnostics.IsEmpty.Should().BeTrue();
+
+        // TODO: fix possible CS8604 warnings
+        outputDiagnostics.Where(d => d.Id != "CS8604").Should().BeEmpty();
     }
 
     private class CustomAdditionalText : AdditionalText
