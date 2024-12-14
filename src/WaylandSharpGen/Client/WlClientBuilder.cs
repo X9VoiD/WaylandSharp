@@ -31,6 +31,8 @@ internal class WlClientBuilder
         _members.AddRange(wlClientBase.GetCompilationUnitRoot().Members);
     }
 
+    public CompilationOptions? CompilationOptions { get; set; }
+
     public ImmutableArray<MemberDeclarationSyntax> BuildMembers()
     {
         return _members.ToImmutable()
@@ -773,7 +775,7 @@ internal class WlClientBuilder
         };
     }
 
-    private static TypeSyntax GetRequestTypeMapping(string interfaceName, MethodArgument messageArgumentDefinition)
+    private TypeSyntax GetRequestTypeMapping(string interfaceName, MethodArgument messageArgumentDefinition)
     {
         if (messageArgumentDefinition.Enum is not null)
             return IdentifierName(messageArgumentDefinition.Enum.ParseEnum(interfaceName)!);
@@ -784,10 +786,13 @@ internal class WlClientBuilder
             ArgumentType.Uint => PredefinedType(Token(SyntaxKind.UIntKeyword)),
             ArgumentType.Fixed => PredefinedType(Token(SyntaxKind.DoubleKeyword)),
             ArgumentType.String => PredefinedType(Token(SyntaxKind.StringKeyword)),
-            ArgumentType.Object => messageArgumentDefinition.Interface switch
+            ArgumentType.Object => messageArgumentDefinition switch
             {
-                null => WlClientObjectTypeSyntax,
-                _ => IdentifierName(messageArgumentDefinition.Interface.SnakeToPascalCase())
+                { Interface: { } name, Nullable: true }
+                    when CompilationOptions?.NullableContextOptions.HasFlag(NullableContextOptions.Annotations) ?? false
+                    => NullableType(IdentifierName(name.SnakeToPascalCase())),
+                { Interface: { } name } => IdentifierName(name.SnakeToPascalCase()),
+                _ => WlClientObjectTypeSyntax,
             },
             ArgumentType.Array => WlArrayTypeSyntax,
             ArgumentType.FD => PredefinedType(Token(SyntaxKind.IntKeyword)),
@@ -990,13 +995,20 @@ internal class WlClientBuilder
                         IdentifierName("RawPointer")));
         }
 
-        static ExpressionSyntax convertWlObject(IdentifierNameSyntax identifier)
+        static ExpressionSyntax convertWlObject(IdentifierNameSyntax identifier, bool isNullable)
         {
-            return
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    identifier,
-                    IdentifierName("_proxyObject"));
+            var accessProxyObject = MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                identifier,
+                IdentifierName("_proxyObject"));
+
+            return isNullable
+                ? ConditionalExpression(
+                        BinaryExpression(SyntaxKind.NotEqualsExpression, identifier, LiteralExpression(SyntaxKind.NullLiteralExpression)),
+                        accessProxyObject,
+                        DefaultExpression(PointerType(_WlProxyTypeSyntax))
+                    )
+                : accessProxyObject;
         }
 
         static ExpressionSyntax convertNewId()
@@ -1032,7 +1044,7 @@ internal class WlClientBuilder
             ArgumentType.Fixed => convertWlFixed(identifier),
             ArgumentType.String => convertCharPointer(identifier),
             ArgumentType.Array => convertWlArray(identifier),
-            ArgumentType.Object => convertWlObject(identifier),
+            ArgumentType.Object => convertWlObject(identifier, argDefinition.Nullable),
             ArgumentType.NewId => convertNewId(),
             ArgumentType.FD => identifier,
             _ => throw new NotSupportedException("Cannot marshal unknown argument type")

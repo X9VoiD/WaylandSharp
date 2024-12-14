@@ -64,15 +64,17 @@ internal class WlBindingGenerator : IIncrementalGenerator
 
         var clientPipeline = mainPipeline
             .Where(static t => t.Item2 == GenerationOption.Client)
-            .Select(static (t, cts) => t.Item1)
+            .Combine(context.CompilationProvider)
+            .Select(static (t, cts) => (Protocol: t.Left.Item1, CompilationOptions: t.Right.Options))
             .Collect();
 
         context.RegisterSourceOutput(clientPipeline, (ctx, a) =>
         {
             var wlClientBuilder = new WlClientBuilder();
-            foreach (var protocol in a)
+            foreach (var tup in a)
             {
-                wlClientBuilder.ProcessProtocolDefinition(protocol);
+                wlClientBuilder.CompilationOptions = tup.CompilationOptions;
+                wlClientBuilder.ProcessProtocolDefinition(tup.Protocol);
             }
 
             var compilationUnit = wlClientBuilder
